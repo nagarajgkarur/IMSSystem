@@ -17,8 +17,6 @@ public class CLMService {
 		String userdata = userDataJson();
 		 Map<String,Object> result = convertStringToMap(userdata);
 		 return result;
-		
-		
 	}
 	
 	public Map<String, Object> convertStringToMap(String data) {

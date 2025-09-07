@@ -1,6 +1,8 @@
 package com.iamsystem.service;
 
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,7 +22,7 @@ public class OpenTextService {
 	UserToRoleService userToRoleService;
 
 	public List<Map<String, Object>> getAllUsers() {
-		String dataToBeConverted = getDataToBeConvert();
+		String dataToBeConverted = process();
 		List<Map<String,Object>> data = convertStringToMap(dataToBeConverted);
 		data.forEach(it->{
 			String userId = it.get("loginId").toString();
@@ -32,11 +34,30 @@ public class OpenTextService {
 	}
 	
 	public List<Map<String, Object>> getUser(String userID) {
-		String dataToBeConverted = getDataToBeConvert();
+		String dataToBeConverted = process();
 		List<Map<String,Object>> data = convertStringToMap(dataToBeConverted);
 		List<Map<String,Object>> user = data.stream().filter(it->it.get("loginId").toString().equals(userID)).collect(Collectors.toList());
 		return user;
 	}
+	
+	
+	 public String process() {
+	        String json1=null;
+			try {
+				json1 = loadJson("opentextuserdata.json");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        return json1;
+	 }
+	 private String loadJson(String filename) throws Exception {
+	        try (InputStream in = getClass().getResourceAsStream("/json/"+filename)) {
+	            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+	        }
+	 }
+	 
+	
 	
 	
 	public List<Map<String, Object>> getRoles(String userId) {
@@ -285,7 +306,7 @@ public class OpenTextService {
 
 	
 
-	public String getDataToBeConvert() {
+	/*public String getDataToBeConvert() {
 		String data = "[\r\n"
 				+ "    {\r\n"
 				+ "        \"companyId\": \"GC031170751577\",\r\n"
@@ -5977,7 +5998,7 @@ public class OpenTextService {
 				+ "    }\r\n"
 				+ "]";
 		return data;
-	}
+	}*/
 	public List<Map<String, Object>> convertStringToMap(String data) {
 		ObjectMapper mapper = new ObjectMapper();
 		List<Map<String, Object>> map = null;

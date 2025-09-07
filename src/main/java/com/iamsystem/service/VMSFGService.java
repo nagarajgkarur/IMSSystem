@@ -1,5 +1,7 @@
 package com.iamsystem.service;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +20,7 @@ public class VMSFGService {
 
 	public Map<String, List<Map<String, String>>> getUsertoRoleMapping() {
 		
-		String usertoRoleMappingData = getUserToRoleMappingData();	
+		String usertoRoleMappingData = process();	
 		ObjectMapper mapper = new ObjectMapper();
 		List<Map<String, String>> map= new ArrayList<Map<String, String>>();
 		try {
@@ -35,6 +37,22 @@ public class VMSFGService {
 		response.put("data",map);
 		return response;
 	}
+	
+	 public String process() {
+	        String json1=null;
+			try {
+				json1 = loadJson("vmsfguserdata.json");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        return json1;
+	 }
+	 private String loadJson(String filename) throws Exception {
+	        try (InputStream in = getClass().getResourceAsStream("/json/"+filename)) {
+	            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+	        }
+	 }
 	
 	
 	public Map<String, List<Map<String, String>>> getRoles() {
@@ -54,7 +72,7 @@ public class VMSFGService {
 		return response;
 	}
 	
-	
+/*	
 	private String getUserToRoleMappingData() {
 		
 		String  usertoRoleMappingData = "{\r\n"
@@ -5780,7 +5798,7 @@ public class VMSFGService {
 		
 		
 		return usertoRoleMappingData;
-	}
+	}*/
 
 	private String getRoleData() {
 		String roleData = "{\r\n"

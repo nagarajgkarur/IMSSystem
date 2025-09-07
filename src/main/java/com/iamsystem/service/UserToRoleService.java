@@ -15,7 +15,6 @@ import com.iamsystem.repository.UserToRoleRepository;
 public class UserToRoleService {
 	
 	
-	
 	@Autowired
 	UserToRoleRepository userToRoleRepository;
 	

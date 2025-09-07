@@ -1,5 +1,7 @@
 package com.iamsystem.service;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +20,6 @@ import com.iamsystem.hive9.response.TeamList;
 import com.iamsystem.hive9.response.Teams;
 import com.iamsystem.hive9.response.Teams1;
 import com.iamsystem.hive9.response.UserTeams;
-import com.iamsystem.hive9.response.UserTeams1;
 import com.iamsystem.hive9.response.Users;
 
 @Service
@@ -488,15 +489,28 @@ public class Hive9Service {
 
 	public List<Users> getusers() throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
-		String usersData = getUsersData();
-		
-		
+		String usersData="";
+		try {
+			usersData = process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		List<Users> map = mapper.readValue(usersData, new TypeReference<List<Users>>(){});
 		return map;
 	}
 	
+	 private String loadJson(String filename) throws Exception {
+	        try (InputStream in = getClass().getResourceAsStream("/json/"+filename)) {
+	            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+	        }
+	 }
 	
-	private String getUsersData() {
+	 public String process() throws Exception {
+	        String json1 = loadJson("hive9userdata.json");
+	        return json1;
+	 }
+	
+	/*private String getUsersData() {
 		String usersData = "[\r\n"
 				+ "    {\r\n"
 				+ "        \"userId\": \"a245bd82-714b-40c7-86bc-0e12c18a4ee7\",\r\n"
@@ -3178,7 +3192,7 @@ public class Hive9Service {
 				+ "    }\r\n"
 				+ "]";
 		return usersData;
-	}
+	}*/
 
 
 	public List<Teams1> getUserTeams() {
@@ -3213,13 +3227,17 @@ public class Hive9Service {
 	}
 
 	private Map<String,String> getUserEmail(){
-		String userData = getUsersData();
 		ObjectMapper mapper = new ObjectMapper();
-		String usersData = getUsersData();
+		String usersData="";
+		try {
+			usersData = process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		Map<String,String> resultMap = new HashMap<String, String>();
 		try {
-			List<Users> map = mapper.readValue(userData, new TypeReference<List<Users>>(){});
+			List<Users> map = mapper.readValue(usersData, new TypeReference<List<Users>>(){});
 			map.forEach(e->{
 				resultMap.put(e.getUserId(), e.getEmail());
 			});
